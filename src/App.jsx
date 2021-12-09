@@ -73,8 +73,8 @@ const App = () => {
       <div className="flex flex-row justify-center pt-8 pl-8 pr-32">
         <div className="flex flex-col flex-grow">
           <Logo />
-          <div className="flex flex-wrap justify-start content-evenly flex-grow px-20 py-32">
-            <h1 className="text-lg">
+          <div className="flex flex-wrap justify-start content-evenly flex-grow px-20 py-20">
+            <h1 className="text-4xl">
               Extract all content pieces from any website
             </h1>
             <Input
@@ -82,12 +82,18 @@ const App = () => {
               value={inputUrl}
               onChange={(event) => setInputUrl(event.target.value)}
             />
-            <Button type="primary" onClick={getEXtractedContentData}>
+            <Button
+              type="primary"
+              onClick={getEXtractedContentData}
+              style={{ background: "#1DC96C", borderRadius: "24px" }}
+            >
               Extract Content <ArrowRightOutlined />
             </Button>
           </div>
         </div>
-        <HeroImage height={200} width={230} />
+        <div className="flex-grow">
+          <HeroImage height={200} width={230} />
+        </div>
       </div>
       <Card
         style={{
