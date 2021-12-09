@@ -48,7 +48,7 @@ const Assets = ({ extractedContent }) => {
           Download All <DownloadOutlined />
         </Button>
       </div>
-      <div className="grid-assets">
+      <div className="grid-assets mt-8">
         <div className="grid-assets-col grid-assets-col--1"></div>
         <div className="grid-assets-col grid-assets-col--2"></div>
         <div className="grid-assets-col grid-assets-col--3"></div>

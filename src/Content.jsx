@@ -1,6 +1,19 @@
-import { Button } from "antd";
+const getCSSFiles = (tree, list) => {
+  if (tree.length === 0) return list;
 
-import { CopyOutlined } from "@ant-design/icons";
+  tree.forEach((resource) => {
+    if (resource.type === "css" && resource.depth === 1) {
+      const isExist = list.find((listItem) => listItem.url === resource.url);
+      if (!isExist)
+        list.push({ url: resource.url, filename: resource.filename });
+    }
+
+    if (resource.children) {
+      list = getCSSFiles(resource.children, list);
+    }
+  });
+  return list;
+};
 
 const Content = ({ extractedContent }) => {
   if (!extractedContent)
@@ -12,15 +25,25 @@ const Content = ({ extractedContent }) => {
     return { __html: extractedContent.content };
   }
 
+  const styleSheets = getCSSFiles(extractedContent.tree, []);
+  console.log({ styleSheets });
+
   return (
     <>
       <div className="flex justify-between">
         <div> {extractedContent.wordCount} WORDS IDENTIFIED</div>
-        <Button type="primary">
-          Copy Content <CopyOutlined />
-        </Button>
       </div>
       <div className="content" dangerouslySetInnerHTML={createMarkup()}></div>
+      {/* {styleSheets.map((styleSheet, index) => {
+        return (
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href={styleSheet.url}
+            key={index}
+          />
+        );
+      })} */}
     </>
   );
 };

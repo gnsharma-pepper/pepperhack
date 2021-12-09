@@ -8,6 +8,7 @@ import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 
 import Assets from "./Assets";
 import Content from "./Content";
+import Sitemap from "./Sitemap";
 
 const tabList = [
   {
@@ -39,20 +40,34 @@ const App = () => {
 
   const getEXtractedContentData = async () => {
     const response = await fetch(
-      `http://ec2-3-109-210-119.ap-south-1.compute.amazonaws.com:3000/scrape?url=${inputUrl}`
+      `https://c87e-3-109-210-119.ngrok.io/scrape?url=${inputUrl}`
     );
-    const apiResponse = await response.json();
-    console.log({ apiResponse });
-    setExtractedContent(apiResponse);
+    const sitemapResponse = await fetch(
+      `https://c87e-3-109-210-119.ngrok.io/sitemap?url=${inputUrl}`
+    );
+    console.log({ response, sitemapResponse });
+    if (response.status === 200) {
+      const scrapeResponse = await response.json();
+      setExtractedContent((extractedContent) => {
+        return { ...extractedContent, ...scrapeResponse };
+      });
+    }
+    if (sitemapResponse.status === 200) {
+      const sitemap = await sitemapResponse.json();
+      setExtractedContent((extractedContent) => {
+        return { ...extractedContent, sitemap };
+      });
+    }
   };
 
   const contentList = {
     content: <Content extractedContent={extractedContent} />,
     assets: <Assets extractedContent={extractedContent} />,
-    contentAudit: <p>contentAudit</p>,
-    sitemap: <p>sitemap</p>,
+    contentAudit: <p>Soon to be available</p>,
+    sitemap: <Sitemap extractedContent={extractedContent} />,
   };
 
+  console.log({ extractedContent });
   return (
     <>
       <div className="flex flex-row justify-center pt-8 pl-8 pr-32">
