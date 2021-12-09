@@ -2,11 +2,12 @@ import { useState } from "react";
 import HeroImage from "./assets/svg/hero-image.svg?component";
 import Logo from "./assets/svg/logo.svg?component";
 import { Input, Button, Card } from "antd";
+import { ArrowRightOutlined } from "@ant-design/icons";
 
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
-import "antd/es/input/style/index.css";
-import "antd/es/button/style/index.css";
-// import 'antd/es/tooltip/style/index.css';
+
+import Assets from "./Assets";
+import Content from "./Content";
 
 const tabList = [
   {
@@ -27,27 +28,48 @@ const tabList = [
   },
 ];
 
-const contentList = {
-  tab1: <p>content1</p>,
-  tab2: <p>content2</p>,
-};
-
 const App = () => {
   const [activeTabKey, setActiveTabKey] = useState("content");
+  const [inputUrl, setInputUrl] = useState("");
+  const [extractedContent, setExtractedContent] = useState();
 
   const onTabChange = (key) => {
     setActiveTabKey(key);
   };
 
+  const getEXtractedContentData = async () => {
+    const response = await fetch(
+      `http://ec2-3-109-210-119.ap-south-1.compute.amazonaws.com:3000/scrape?url=${inputUrl}`
+    );
+    const apiResponse = await response.json();
+    console.log({ apiResponse });
+    setExtractedContent(apiResponse);
+  };
+
+  const contentList = {
+    content: <Content extractedContent={extractedContent} />,
+    assets: <Assets extractedContent={extractedContent} />,
+    contentAudit: <p>contentAudit</p>,
+    sitemap: <p>sitemap</p>,
+  };
+
   return (
     <>
-      <div className="flex flex-row justify-center pt-8 pl-8 pr-12">
+      <div className="flex flex-row justify-center pt-8 pl-8 pr-32">
         <div className="flex flex-col flex-grow">
           <Logo />
-          <div className="flex flex-col justify-around content-center flex-grow px-20 py-28">
-            <h1> Extract all content pieces from any website </h1>
-            <Input placeholder="Enter the website URL here" />
-            <Button type="primary">Extract Content</Button>
+          <div className="flex flex-wrap justify-start content-evenly flex-grow px-20 py-32">
+            <h1 className="text-lg">
+              Extract all content pieces from any website
+            </h1>
+            <Input
+              placeholder="Enter the website URL here"
+              value={inputUrl}
+              onChange={(event) => setInputUrl(event.target.value)}
+            />
+            <Button type="primary" onClick={getEXtractedContentData}>
+              Extract Content <ArrowRightOutlined />
+            </Button>
           </div>
         </div>
         <HeroImage height={200} width={230} />
@@ -63,8 +85,11 @@ const App = () => {
         className="p-20"
         tabList={tabList}
         activeTabKey={activeTabKey}
+        headStyle={{
+          background: "#F8F9FA",
+          borderRadius: "12px 12px 0px 0px",
+        }}
         onTabChange={onTabChange}
-        hoverable
       >
         {contentList[activeTabKey]}
       </Card>
